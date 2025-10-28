@@ -1,4 +1,3 @@
-// server.js
 import express from "express";
 import cors from "cors";
 
@@ -7,12 +6,8 @@ app.use(cors());
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.send("Addy Proxy is running ✅");
-});
-
-app.post("/api", async (req, res) => {
-  res.json({ success: true, message: "Proxy connected!" });
+  res.send("✅ Proxy server is running fine!");
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`✅ Server live on port ${PORT}`));
+app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
