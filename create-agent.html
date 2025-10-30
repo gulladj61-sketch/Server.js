@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create AI Agent - AI Agent Builder</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .step-active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .step-completed { background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); }
+        .step-inactive { background: #e2e8f0; }
+        .form-section { display: none; }
+        .form-section.active { display: block; }
+        .progress-bar { transition: width 0.3s ease; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+    <!-- Download Button -->
+    <div class="download-btn">
+        <button onclick="downloadApp()" class="bg-green-600 text-white p-3 rounded-full shadow-lg hover:bg-green-700 transition-all pulse-glow" title="Download AI Agent Hub App">
+            <i class="fas fa-download text-xl"></i>
+        </button>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg fixed w-full top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-2xl font-bold text-indigo-600">AI Agent Hub</h1>
+                    </div>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="index.html" class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">Home</a>
+                        <a href="create-agent.html" class="px-3 py-2 rounded-md text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700">Create Agent</a>
+                        <a href="customize.html" class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">Customize</a>
+                        <a href="marketplace.html" class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">Marketplace</a>
+                        <a href="dashboard.html" class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">Dashboard</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="pt-20 min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <!-- Header -->
+            <div class="text-center mb-12">
+                <h1 class="text-4xl font-bold text-gray-900 mb-4">Create Your AI Agent</h1>
+                <p class="text-xl text-gray-600">Follow our simple 6-step process to build your perfect AI assistant</p>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="mb-12">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="flex items-center">
+                        <div id="step1" class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold step-active">1</div>
+                        <span class="ml-2 text-sm font-medium text-gray-700">Agent Type</span>
+                    </div>
+                    <div class="flex items-center">
+                        <div id="step2" class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold step-inactive">2</div>
+                        <span class="ml-2 text-sm font-medium text-gray-400">Basic Info</span>
+                    </div>
+                    <div class="flex items-center">
+                        <div id="step3" class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold step-inactive">3</div>
+                        <span class="ml-2 text-sm font-medium text-gray-400">Personality</span>
+                    </div>
+                    <div class="flex items-center">
+                        <div id="step4" class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold step-inactive">4</div>
+                        <span class="ml-2 text-sm font-medium text-gray-400">Knowledge</span>
+                    </div>
+                    <div class="flex items-center">
+                        <div id="step5" class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold step-inactive">5</div>
+                        <span class="ml-2 text-sm font-medium text-gray-400">Integration</span>
+                    </div>
+                    <div class="flex items-center">
+                        <div id="step6" class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold step-inactive">6</div>
+                        <span class="ml-2 text-sm font-medium text-gray-400">Deploy</span>
+                    </div>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2">
+                    <div id="progressBar" class="progress-bar bg-gradient-to-r from-indigo-500 to-purple-600 h-2 rounded-full" style="width: 16.67%"></div>
+                </div>
+            </div>
+
+            <!-- Form Container -->
+            <div class="bg-white rounded-2xl shadow-xl p-8">
+                <form id="agentForm">
+                    <!-- Step 1: Agent Type -->
+                    <div id="section1" class="form-section active">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6">What type of agent do you want to create?</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="agent-type-card border-2 border-gray-200 rounded-lg p-6 cursor-pointer hover:border-indigo-500 transition-colors" data-type="support">
+                                <div class="flex items-center mb-4">
+                                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+                                        <i class="fas fa-headset text-blue-600 text-xl"></i>
+                                    </div>
+                                    <h3 class="text-lg font-semibold">Customer Support</h3>
+                                </div>
+                                <p class="text-gray-600">Handle customer inquiries and provide automated support</p>
+                            </div>
+                            <div class="agent-type-card border-2 border-gray-200 rounded-lg p-6 cursor-pointer hover:border-indigo-500 transition-colors" data-type="sales">
+                                <div class="flex items-center mb-4">
+                                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
+                                        <i class="fas fa-chart-line text-green-600 text-xl"></i>
+                                    </div>
+                                    <h3 class="text-lg font-semibold">Sales Assistant</h3>
+                                </div>
+                                <p class="text-gray-600">Qualify leads and guide prospects through your funnel</p>
+                            </div>
+                            <div class="agent-type-card border-2 border-gray-200 rounded-lg p-6 cursor-pointer hover:border-indigo-500 transition-colors" data-type="content">
+                                <div class="flex items-center mb-4">
+                                    <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
+                                        <i class="fas fa-pen-fancy text-purple-600 text-xl"></i>
+                                    </div>
+                                    <h3 class="text-lg font-semibold">Content Creator</h3>
+                                </div>
+                                <p class="text-gray-600">Generate blog posts and marketing content automatically</p>
+                            </div>
+                            <div class="agent-type-card border-2 border-gray-200 rounded-lg p-6 cursor-pointer hover:border-indigo-500 transition-colors" data-type="custom">
+                                <div class="flex items-center mb-4">
+                                    <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mr-4">
+                                        <i class="fas fa-cogs text-gray-600 text-xl"></i>
+                                    </div>
+                                    <h3 class="text-lg font-semibold">Custom Agent</h3>
+                                </div>
+                                <p class="text-gray-600">Build a completely custom solution for your needs</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Basic Information -->
+                    <div id="section2" class="form-section">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6">Basic Information</h2>
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Agent Name</label>
+                                <input type="text" id="agentName" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Enter a name for your agent">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                                <textarea id="agentDescription" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Describe what your agent will do"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Industry</label>
+                                <select id="agentIndustry" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                                    <option value="">Select an industry</option>
+                                    <option value="ecommerce">E-commerce</option>
+                                    <option value="healthcare">Healthcare</option>
+                                    <option value="education">Education</option>
+                                    <option value="finance">Finance</option>
+                                    <option value="technology">Technology</option>
+                                    <option value="retail">Retail</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Personality -->
+                    <div id="section3" class="form-section">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6">Agent Personality</h2>
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Communication Style</label>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div class="personality-card border-2 border-gray-200 rounded-lg p-4 cursor-pointer hover:border-indigo-500 transition-colors" data-style="professional">
+                                        <h4 class="font-semibold mb-2">Professional</h4>
+                                        <p class="text-sm text-gray-600">Formal and business-appropriate</p>
+                                    </div>
+                                    <div class="personality-card border-2 border-gray-200 rounded-lg p-4 cursor-pointer hover:border-indigo-500 transition-colors" data-style="friendly">
+                                        <h4 class="font-semibold mb-2">Friendly</h4>
+                                        <p class="text-sm text-gray-600">Warm and conversational</p>
+                                    </div>
+                                    <div class="personality-card border-2 border-gray-200 rounded-lg p-4 cursor-pointer hover:border-indigo-500 transition-colors" data-style="casual">
+                                        <h4 class="font-semibold mb-2">Casual</h4>
+                                        <p class="text-sm text-gray-600">Relaxed and informal</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Tone</label>
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                    <div class="tone-card border-2 border-gray-200 rounded-lg p-4 cursor-pointer hover:border-indigo-500 transition-colors text-center" data-tone="helpful">
+                                        <i class="fas fa-hands-helping text-2xl text-blue-600 mb-2"></i>
+                                        <h4 class="font-semibold text-sm">Helpful</h4>
+                                    </div>
+                                    <div class="tone-card border-2 border-gray-200 rounded-lg p-4 cursor-pointer hover:border-indigo-500 transition-colors text-center" data-tone="enthusiastic">
+                                        <i class="fas fa-fire text-2xl text-orange-600 mb-2"></i>
+                                        <h4 class="font-semibold text-sm">Enthusiastic</h4>
+                                    </div>
+                                    <div class="tone-card border-2 border-gray-200 rounded-lg p-4 cursor-pointer hover:border-indigo-500 transition-colors text-center" data-tone="calm">
+                                        <i class="fas fa-leaf text-2xl text-green-600 mb-2"></i>
+                                        <h4 class="font-semibold text-sm">Calm</h4>
+                                    </div>
+                                    <div class="tone-card border-2 border-gray-200 rounded-lg p-4 cursor-pointer hover:border-indigo-500 transition-colors text-center" data-tone="authoritative">
+                                        <i class="fas fa-crown text-2xl text-purple-600 mb-2"></i>
+                                        <h4 class="font-semibold text-sm">Authoritative</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Knowledge Base -->
+                    <div id="section4" class="form-section">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6">Knowledge Base</h2>
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Upload Documents</label>
+                                <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-indigo-500 transition-colors">
+                                    <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
+                                    <p class="text-gray-600 mb-2">Drag and drop your files here, or click to browse</p>
+                                    <p class="text-sm text-gray-500">Supported formats: PDF, DOC, TXT, CSV</p>
+                                    <input type="file" id="fileUpload" multiple class="hidden" accept=".pdf,.doc,.txt,.csv">
+                                    <button type="button" onclick="document.getElementById('fileUpload').click()" class="mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
+                                        Choose Files
+                                    </button>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Website URLs (Optional)</label>
+                                <div class="space-y-2">
+                                    <input type="url" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="https://yourwebsite.com/knowledge-base">
+                                    <input type="url" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="https://docs.yourcompany.com">
+                                </div>
+                                <p class="text-sm text-gray-500 mt-2">Add URLs to scrape for additional knowledge</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Custom Instructions</label>
+                                <textarea id="customInstructions" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Provide specific instructions or guidelines for your agent..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 5: Integration -->
+                    <div id="section5" class="form-section">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6">Integration Settings</h2>
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Platform Integration</label>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="integration-card border-2 border-gray-200 rounded-lg p-4 cursor-pointer hover:border-indigo-500 transition-colors" data-platform="web">
+                                        <div class="flex items-center">
+                                            <i class="fas fa-globe text-2xl text-blue-600 mr-3"></i>
+                                            <div>
+                                                <h4 class="font-semibold">Web Widget</h4>
+                                                <p class="text-sm text-gray-600">Embed on your website</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="integration-card border-2 border-gray-200 rounded-lg p-4 cursor-pointer hover:border-indigo-500 transition-colors" data-platform="slack">
+                                        <div class="flex items-center">
+                                            <i class="fab fa-slack text-2xl text-purple-600 mr-3"></i>
+                                            <div>
+                                                <h4 class="font-semibold">Slack</h4>
+                                                <p class="text-sm text-gray-600">Integrate with Slack</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="integration-card border-2 border-gray-200 rounded-lg p-4 cursor-pointer hover:border-indigo-500 transition-colors" data-platform="discord">
+                                        <div class="flex items-center">
+                                            <i class="fab fa-discord text-2xl text-indigo-600 mr-3"></i>
+                                            <div>
+                                                <h4 class="font-semibold">Discord</h4>
+                                                <p class="text-sm text-gray-600">Add to Discord server</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="integration-card border-2 border-gray-200 rounded-lg p-4 cursor-pointer hover:border-indigo-500 transition-colors" data-platform="api">
+                                        <div class="flex items-center">
+                                            <i class="fas fa-code text-2xl text-green-600 mr-3"></i>
+                                            <div>
+                                                <h4 class="font-semibold">API Access</h4>
+                                                <p class="text-sm text-gray-600">REST API integration</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Response Time</label>
+                                <select id="responseTime" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                                    <option value="instant">Instant (0-1 seconds)</option>
+                                    <option value="fast">Fast (1-3 seconds)</option>
+                                    <option value="normal">Normal (3-5 seconds)</option>
+                                    <option value="delayed">Delayed (5-10 seconds)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 6: Deploy -->
+                    <div id="section6" class="form-section">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6">Deploy Your Agent</h2>
+                        <div class="text-center">
+                            <div class="w-32 h-32 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                                <i class="fas fa-rocket text-5xl text-white"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-4">Ready to Launch!</h3>
+                            <p class="text-gray-600 mb-8">Your AI agent is configured and ready to be deployed. Review your settings and launch when you're ready.</p>
+                            
+                            <!-- Agent Summary -->
+                            <div class="bg-gray-50 rounded-lg p-6 mb-8 text-left">
+                                <h4 class="font-bold text-lg mb-4">Agent Summary</h4>
+                                <div id="agentSummary" class="space-y-2 text-sm">
+                                    <!-- Summary will be populated by JavaScript -->
+                                </div>
+                            </div>
+
+                            <div class="space-y-4">
+                                <button type="button" onclick="deployAgent()" class="w-full bg-green-600 text-white py-4 rounded-lg font-semibold hover:bg-green-700 transition-colors">
+                                    <i class="fas fa-play mr-2"></i>Deploy Agent Now
+                                </button>
+                                <button type="button" onclick="saveAsDraft()" class="w-full border-2 border-gray-300 text-gray-700 py-4 rounded-lg font-semibold hover:bg-gray-50 transition-colors">
+                                    <i class="fas fa-save mr-2"></i>Save as Draft
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Navigation Buttons -->
+                    <div class="flex justify-between mt-8">
+                        <button type="button" id="prevBtn" onclick="changeStep(-1)" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors" style="display: none;">
+                            <i class="fas fa-arrow-left mr-2"></i>Previous
+                        </button>
+                        <button type="button" id="nextBtn" onclick="changeStep(1)" class="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors ml-auto">
+                            Next <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-2xl p-8 max-w-md mx-4 text-center">
+            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-check text-2xl text-green-600"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 mb-4">Agent Created Successfully!</h3>
+            <p class="text-gray-600 mb-6">Your AI agent has been deployed and is ready to use.</p>
+            <div class="space-y-3">
+                <button onclick="goToDashboard()" class="w-full bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition-colors">
+                    Go to Dashboard
+                </button>
+                <button onclick="closeModal()" class="w-full border-2 border-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-50 transition-colors">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 6;
+        let formData = {};
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if agent type was pre-selected
+            const selectedType = localStorage.getItem('selectedAgentType');
+            if (selectedType) {
+                const agentCard = document.querySelector(`[data-type="${selectedType}"]`);
+                if (agentCard) {
+                    agentCard.classList.add('border-indigo-500', 'bg-indigo-50');
+                    formData.agentType = selectedType;
+                }
+            }
+
+            // Add event listeners
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            // Agent type selection
+            document.querySelectorAll('.agent-type-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    document.querySelectorAll('.agent-type-card').forEach(c => 
+                        c.classList.remove('border-indigo-500', 'bg-indigo-50'));
+                    this.classList.add('border-indigo-500', 'bg-indigo-50');
+                    formData.agentType = this.dataset.type;
+                });
+            });
+
+            // Personality selection
+            document.querySelectorAll('.personality-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    document.querySelectorAll('.personality-card').forEach(c => 
+                        c.classList.remove('border-indigo-500', 'bg-indigo-50'));
+                    this.classList.add('border-indigo-500', 'bg-indigo-50');
+                    formData.communicationStyle = this.dataset.style;
+                });
+            });
+
+            // Tone selection
+            document.querySelectorAll('.tone-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    document.querySelectorAll('.tone-card').forEach(c => 
+                        c.classList.remove('border-indigo-500', 'bg-indigo-50'));
+                    this.classList.add('border-indigo-500', 'bg-indigo-50');
+                    formData.tone = this.dataset.tone;
+                });
+            });
+
+            // Integration selection
+            document.querySelectorAll('.integration-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    document.querySelectorAll('.integration-card').forEach(c => 
+                        c.classList.remove('border-indigo-500', 'bg-indigo-50'));
+                    this.classList.add('border-indigo-500', 'bg-indigo-50');
+                    formData.platform = this.dataset.platform;
+                });
+            });
+        }
+
+        function changeStep(direction) {
+            if (direction === 1 && !validateCurrentStep()) {
+                return;
+            }
+
+            const newStep = currentStep + direction;
+            if (newStep < 1 || newStep > totalSteps) return;
+
+            // Update step indicators
+            updateStepIndicators(newStep);
+            
+            // Show/hide form sections
+            document.getElementById(`section${currentStep}`).classList.remove('active');
+            document.getElementById(`section${newStep}`).classList.add('active');
+            
+            // Update progress bar
+            const progress = (newStep / totalSteps) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            
+            // Update navigation buttons
+            updateNavigationButtons(newStep);
+            
+            currentStep = newStep;
+
+            // Update agent summary on final step
+            if (currentStep === 6) {
+                updateAgentSummary();
+            }
+        }
+
+        function updateStepIndicators(newStep) {
+            for (let i = 1; i <= totalSteps; i++) {
+                const stepElement = document.getElementById(`step${i}`);
+                const stepText = stepElement.nextElementSibling;
+                
+                if (i < newStep) {
+                    stepElement.className = 'w-10 h-10 rounded-full flex items-center justify-center text-white font-bold step-completed';
+                    stepText.className = 'ml-2 text-sm font-medium text-gray-700';
+                } else if (i === newStep) {
+                    stepElement.className = 'w-10 h-10 rounded-full flex items-center justify-center text-white font-bold step-active';
+                    stepText.className = 'ml-2 text-sm font-medium text-gray-700';
+                } else {
+                    stepElement.className = 'w-10 h-10 rounded-full flex items-center justify-center text-gray-400 font-bold step-inactive';
+                    stepText.className = 'ml-2 text-sm font-medium text-gray-400';
+                }
+            }
+        }
+
+        function updateNavigationButtons(newStep) {
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            if (newStep === 1) {
+                prevBtn.style.display = 'none';
+            } else {
+                prevBtn.style.display = 'block';
+            }
+            
+            if (newStep === totalSteps) {
+                nextBtn.style.display = 'none';
+            } else {
+                nextBtn.style.display = 'block';
+            }
+        }
+
+        function validateCurrentStep() {
+            switch (currentStep) {
+                case 1:
+                    if (!formData.agentType) {
+                        alert('Please select an agent type');
+                        return false;
+                    }
+                    break;
+                case 2:
+                    const name = document.getElementById('agentName').value;
+                    const description = document.getElementById('agentDescription').value;
+                    const industry = document.getElementById('agentIndustry').value;
+                    
+                    if (!name || !description || !industry) {
+                        alert('Please fill in all required fields');
+                        return false;
+                    }
+                    formData.name = name;
+                    formData.description = description;
+                    formData.industry = industry;
+                    break;
+                case 3:
+                    if (!formData.communicationStyle || !formData.tone) {
+                        alert('Please select communication style and tone');
+                        return false;
+                    }
+                    break;
+                case 4:
+                    const instructions = document.getElementById('customInstructions').value;
+                    formData.customInstructions = instructions;
+                    break;
+                case 5:
+                    const responseTime = document.getElementById('responseTime').value;
+                    formData.responseTime = responseTime;
+                    if (!formData.platform) {
+                        alert('Please select an integration platform');
+                        return false;
+                    }
+                    break;
+            }
+            return true;
+        }
+
+        function updateAgentSummary() {
+            const summary = document.getElementById('agentSummary');
+            summary.innerHTML = `
+                <div><strong>Name:</strong> ${formData.name}</div>
+                <div><strong>Type:</strong> ${formData.agentType.charAt(0).toUpperCase() + formData.agentType.slice(1)} Agent</div>
+                <div><strong>Industry:</strong> ${formData.industry}</div>
+                <div><strong>Communication Style:</strong> ${formData.communicationStyle}</div>
+                <div><strong>Tone:</strong> ${formData.tone}</div>
+                <div><strong>Platform:</strong> ${formData.platform.toUpperCase()}</div>
+                <div><strong>Response Time:</strong> ${formData.responseTime}</div>
+            `;
+        }
+
+        function deployAgent() {
+            // Simulate deployment
+            document.getElementById('successModal').classList.remove('hidden');
+            document.getElementById('successModal').classList.add('flex');
+            
+            // Save agent data
+            const agents = JSON.parse(localStorage.getItem('agents') || '[]');
+            const newAgent = {
+                id: Date.now(),
+                ...formData,
+                status: 'active',
+                createdAt: new Date().toISOString(),
+                conversations: 0,
+                rating: 0
+            };
+            agents.push(newAgent);
+            localStorage.setItem('agents', JSON.stringify(agents));
+        }
+
+        function saveAsDraft() {
+            const agents = JSON.parse(localStorage.getItem('agents') || '[]');
+            const draftAgent = {
+                id: Date.now(),
+                ...formData,
+                status: 'draft',
+                createdAt: new Date().toISOString()
+            };
+            agents.push(draftAgent);
+            localStorage.setItem('agents', JSON.stringify(agents));
+            
+            alert('Agent saved as draft!');
+            window.location.href = 'dashboard.html';
+        }
+
+        function goToDashboard() {
+            window.location.href = 'dashboard.html';
+        }
+
+        function closeModal() {
+            document.getElementById('successModal').classList.add('hidden');
+            document.getElementById('successModal').classList.remove('flex');
+            window.location.href = 'dashboard.html';
+        }
+
+        // Download app function
+        function downloadApp() {
+            const appData = {
+                name: "AI Agent Hub",
+                version: "1.0.0",
+                description: "World's Top 20 AI Agents in one platform",
+                features: ["20+ Top AI Agents", "Interactive Demo Mode", "Advanced Customization", "Performance Analytics", "Community Features"]
+            };
+
+            const dataStr = JSON.stringify(appData, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = `AI_Agent_Hub_v1.0.0.json`;
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+            
+            alert('🎉 AI Agent Hub app downloaded successfully!\n\nThe app includes:\n• All 20 top AI agents\n• Interactive demo mode\n• Advanced customization tools\n• Performance analytics\n• Community features\n\nInstall and start using the world\'s best AI agents today!');
+        }
+    </script>
+</body>
+</html>
